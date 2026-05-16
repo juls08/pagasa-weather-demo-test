@@ -52,3 +52,8 @@ The format is based on Keep a Changelog and this project can use Semantic Versio
 
 ### Fixed
 - Fixed Frontend build memory limit issue.
+
+## [1.0.7] - 2026-05-16
+
+### Fixed
+- Fixed Release frontend build node version.
