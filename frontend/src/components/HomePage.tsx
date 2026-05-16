@@ -33,6 +33,9 @@ export default function HomePage() {
             PAGASA Weather Decision Support Demo
           </Typography>
           <Typography variant="body1" className="mb-4 font-semibold flex items-center gap-2">
+            This demo showcases a weather decision support system using satellite imagery and machine learning.
+          </Typography>
+          <Typography variant="body1" className="mb-4 font-semibold flex items-center gap-2">
             Upload a weather image, or use a built-in sample for instant demo analysis.
           </Typography>
         </Paper>
