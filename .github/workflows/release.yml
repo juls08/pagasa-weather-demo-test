@@ -167,18 +167,35 @@ jobs:
           SERVER_USER: ${{ secrets.STAGING_SERVER_USER }}
           SERVER_PASSWORD: ${{ secrets.STAGING_SERVER_PASSWORD }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          GITHUB_REPO: ${{ github.repository }}
+          TAG_NAME: ${{ github.ref_name }}
         run: |
-          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST << 'ENDSSH'
+          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST bash -s << 'ENDSSH'
             set -e
             
-            echo "Deploying ${GITHUB_REF_NAME} to staging..."
+            echo "Deploying $TAG_NAME to staging..."
             
-            # Navigate to deployment directory
-            cd ${{ secrets.DEPLOY_PATH }}
+            # Check if deployment directory exists and is a git repo
+            if [ -d "$DEPLOY_PATH/.git" ]; then
+              echo "Repository exists, updating..."
+              cd $DEPLOY_PATH
+              git fetch --tags origin
+              git checkout $TAG_NAME
+            else
+              echo "First time setup - cloning repository..."
+              # Create parent directory if needed
+              mkdir -p $(dirname $DEPLOY_PATH)
+              
+              # Clone the repository
+              git clone https://github.com/$GITHUB_REPO.git $DEPLOY_PATH
+              cd $DEPLOY_PATH
+              
+              # Checkout the release tag
+              git fetch --tags origin
+              git checkout $TAG_NAME
+            fi
             
-            # Fetch latest changes and checkout the release tag
-            git fetch --tags origin
-            git checkout ${{ github.ref_name }}
+            echo "Current version: $(git describe --tags)"
             
             # Stop existing containers gracefully
             echo "Stopping existing containers..."
@@ -228,15 +245,20 @@ jobs:
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
           echo "Rolling back deployment..."
-          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST << 'ENDSSH'
-            cd ${{ secrets.DEPLOY_PATH }}
-            
-            # Checkout main branch (stable version)
-            git checkout main
-            
-            # Restart containers with stable version
-            docker compose -f docker-compose.prod-github-release.yml down
-            docker compose -f docker-compose.prod-github-release.yml up -d --build
-            
-            echo "Rollback complete. Running stable version."
+          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST bash -s << 'ENDSSH'
+            if [ -d "$DEPLOY_PATH/.git" ]; then
+              cd $DEPLOY_PATH
+              
+              # Checkout main branch (stable version)
+              git checkout main
+              git pull origin main
+              
+              # Restart containers with stable version
+              docker compose -f docker-compose.prod-github-release.yml down
+              docker compose -f docker-compose.prod-github-release.yml up -d --build
+              
+              echo "Rollback complete. Running stable version."
+            else
+              echo "No git repository found, cannot rollback."
+            fi
           ENDSSH
