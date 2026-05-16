@@ -47,3 +47,8 @@ The format is based on Keep a Changelog and this project can use Semantic Versio
 
 ### Fixed
 - Fixed GitHub Deployment workflows.
+
+## [1.0.6] - 2026-05-16
+
+### Fixed
+- Fixed Frontend build memory limit issue.
