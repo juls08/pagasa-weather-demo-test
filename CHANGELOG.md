@@ -57,3 +57,9 @@ The format is based on Keep a Changelog and this project can use Semantic Versio
 
 ### Fixed
 - Fixed Release frontend build node version.
+
+## [1.0.8] - 2026-05-16
+
+### Fixed
+- Fixed Backend CORS allowed origins to include production domain.
+- Updated GitHub Release workflow to set environment variable for Node.js version 24.
