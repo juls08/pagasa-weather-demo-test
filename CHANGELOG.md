@@ -32,3 +32,8 @@ The format is based on Keep a Changelog and this project can use Semantic Versio
 
 ### Changed
 - Updated Frontend Homepage to include a description of the demo application.
+
+## [1.0.3] - 2026-05-16
+
+### Changed
+- Updated GitHub Release/Deployment workflows.
