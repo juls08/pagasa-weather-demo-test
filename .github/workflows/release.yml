@@ -170,7 +170,7 @@ jobs:
           GITHUB_REPO: ${{ github.repository }}
           TAG_NAME: ${{ github.ref_name }}
         run: |
-          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST bash -s << 'ENDSSH'
+          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST bash << ENDSSH
             set -e
             
             echo "Deploying $TAG_NAME to staging..."
@@ -184,7 +184,7 @@ jobs:
             else
               echo "First time setup - cloning repository..."
               # Create parent directory if needed
-              mkdir -p $(dirname $DEPLOY_PATH)
+              mkdir -p \$(dirname $DEPLOY_PATH)
               
               # Clone the repository
               git clone https://github.com/$GITHUB_REPO.git $DEPLOY_PATH
@@ -195,7 +195,7 @@ jobs:
               git checkout $TAG_NAME
             fi
             
-            echo "Current version: $(git describe --tags)"
+            echo "Current version: \$(git describe --tags)"
             
             # Stop existing containers gracefully
             echo "Stopping existing containers..."
@@ -245,7 +245,7 @@ jobs:
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
           echo "Rolling back deployment..."
-          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST bash -s << 'ENDSSH'
+          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST bash << ENDSSH
             if [ -d "$DEPLOY_PATH/.git" ]; then
               cd $DEPLOY_PATH
               

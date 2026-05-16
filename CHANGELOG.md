@@ -42,3 +42,8 @@ The format is based on Keep a Changelog and this project can use Semantic Versio
 
 ### Changed
 - Updated GitHub Deployment workflows.
+
+## [1.0.5] - 2026-05-16
+
+### Fixed
+- Fixed GitHub Deployment workflows.
