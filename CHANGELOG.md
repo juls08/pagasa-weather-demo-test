@@ -63,3 +63,8 @@ The format is based on Keep a Changelog and this project can use Semantic Versio
 ### Fixed
 - Fixed Backend CORS allowed origins to include production domain.
 - Updated GitHub Release workflow to set environment variable for Node.js version 24.
+
+## [1.0.9] - 2026-05-16
+
+### Changed
+- Updated GitHub CI workflow to set environment variable for Node.js version 24.
